@@ -13,8 +13,8 @@ struct color_table{
 
 color_table create_color_table(image self){
   color_table tab;
-	int Dim = image_give_dim(self);
-	assert(Dim>0 && Dim<=3);
+  int Dim = image_give_dim(self);
+  assert(Dim>0 && Dim<=3);
   tab = (color_table)malloc(sizeof(struct color_table));
   tab->owner = true;  
   tab->dim = Dim;
@@ -56,7 +56,7 @@ color_table color_table_duplicate(color_table tab, int offset, int len){
 	dup_tab->owner = false;
   dup_tab->dim = tab->dim;
 	dup_tab->color_num = len;
-	dup_tab->colors = tab->colors + dup_tab->dim*offset; /*l'offset dépendra de la dimension*/
+	dup_tab->colors = tab->colors + dup_tab->dim*offset; /*l'offset dÃ©pendra de la dimension*/
 	return(dup_tab);
 }
 
