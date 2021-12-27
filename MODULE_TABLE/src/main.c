@@ -151,7 +151,10 @@ void main(int argc, char* argv[]){
   }
   
   printf("Test getcolor\n --------------------\n");
-
+  color* color_i;
+  color_table_get_color(tab,2,color_i);
+  printf("%d, %d, %d\n", *color_i, *(color_i+1), *(color_i+2));
+  }
   printf("Test sort\n--------------------\n");
   }
   
