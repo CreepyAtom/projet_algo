@@ -148,7 +148,7 @@ void main(int argc, char* argv[]){
   dup_tab=color_table_duplicate(tab,2,3);
   for (int i=0; i<dup_tab->color_num;i++){
   printf("%d, %d, %d\n", dup_tab->colors[dup_tab->dim * i], dup_tab->colors[dup_tab->dim * i+1], dup_tab->colors[dup_tab->dim * i+2]);
-  }
+  };
   
   printf("Test getcolor\n --------------------\n");
   color* color_i;
