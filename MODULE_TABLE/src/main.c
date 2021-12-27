@@ -18,16 +18,16 @@ color_table create_color_table(image self){
   tab = (color_table)malloc(sizeof(struct color_table));
   tab->owner = true;  
   tab->dim = Dim;
- 	tab->color_num = image_give_largeur(self)*image_give_hauteur(self);
-	tab->colors = malloc(tab->color_num*Dim*sizeof(color));
+  tab->color_num = image_give_largeur(self)*image_give_hauteur(self);
+  tab->colors = malloc(tab->color_num*Dim*sizeof(color));
  
  
   int *array = malloc(Dim * sizeof(color));
   image_debut(self);
   for (int i = 0; i < tab->color_num; i++) {
         array = image_lire_pixel(self);
-        for (int k = 0; k < Dim; k++) {
-            image_pixel_suivant(self);
+	image_pixel_suivant(self);
+        for (int k = 0; k < Dim; k++){
             *(tab->colors+ i*Dim + k) = *(array+k);
         }
     } 
