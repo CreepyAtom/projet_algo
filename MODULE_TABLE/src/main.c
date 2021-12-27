@@ -50,7 +50,7 @@ boolean destroy_color_table(color_table tab){
 
 
 color_table color_table_duplicate(color_table tab, int offset, int len){
-	color_table dup_tab = (color_table)malloc(sizeof(struct color_table));
+	color_table dup_tab;
 	assert(offset>-1);
 	assert(len>0);
 	dup_tab->owner = false;
