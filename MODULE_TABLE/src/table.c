@@ -87,8 +87,8 @@ void swap_tab(color_table tab, int i){
     *(temp_tab+1) = *(tab->colors+i+1);
     *(temp_tab+2) = *(tab->colors+i+2);
     *(tab->colors+i) = *(tab->colors+i+3);
-    *(tab->colors+i) = *(tab->colors+i+4);
-    *(tab->colors+i) = *(tab->colors+i+5);
+    *(tab->colors+i+1) = *(tab->colors+i+4);
+    *(tab->colors+i+2) = *(tab->colors+i+5);
     *(tab->colors+i+3) = *temp_tab;
     *(tab->colors+i+4) = *(temp_tab+1);
     *(tab->colors+i+5) = *(temp_tab+2);
