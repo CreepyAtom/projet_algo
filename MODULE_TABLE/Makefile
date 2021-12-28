@@ -1,7 +1,7 @@
 CFLAGS = -Wall -Wextra -pedantic -g
 CPPFLAGS = -I./inc/
 EXEC = ./bin/
-OBJS_SIEVE = ./obj/main.o ./obj/image.o 
+OBJS_SIEVE = ./obj/main.o ./obj/image.o ./obj/table.o 
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -16,10 +16,10 @@ main.bin: ${OBJS_SIEVE}
 	gcc $^ -o ${BIN_PATH}$@ 
 
 
-${OBJ_PATH}main.o: ${SRC_PATH}main.c
-	gcc -c $< -o $@ ${CPPFLAGS} ${CFLAGS}
+${OBJ_PATH}main.o: ${SRC_PATH}main.c 
+	gcc -c $< -o $@ ${CPPFLAGS}
 
 
 ${OBJ_PATH}table.o: ${SRC_PATH}table.c
-	gcc -c $< -o $@ ${CPPFLAGS} ${CFLAGS} 
+	gcc -c $< -o $@ ${CPPFLAGS}
 
