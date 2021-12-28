@@ -122,7 +122,7 @@ void color_table_sort(color_table tab, axis x){
     ax = 2;
   while (swap>0){
     swap = 0;
-    for (i=0;i<tab->color_num;i++){
+    for (i=0;i<tab->color_num-1;i++){
       if (tab->colors[ax+dim*i] > tab->colors[ax+dim*(i+1)]){
         swap_tab(tab,ax+dim*i);
         swap = 1;
