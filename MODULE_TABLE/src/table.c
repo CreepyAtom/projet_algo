@@ -1,6 +1,7 @@
 #include "image.h"
 #include "table.h"
 #include <assert.h>
+#include <stdio.h>
 
 struct color_table{
   int color_num;
@@ -9,19 +10,33 @@ struct color_table{
   int dim;
 };
 
+
 color_table create_color_table(image self){
-	color_table tab;
-	int Dim = image_give_dim(self);
-	assert(Dim>0 && Dim<=3);
-  tab = malloc(sizeof(color_table));
-  
+  color_table tab;
+  int Dim = image_give_dim(self);
+  assert(Dim>0 && Dim<=3);
+  tab = (color_table)malloc(sizeof(struct color_table));
+  tab->owner = true;  
   tab->dim = Dim;
- 	tab->color_num = image_give_largeur(self)*image_give_hauteur(self);
-	tab->colors = malloc(tab->color_num*image_give_dim(self)*sizeof(int));
-	tab->colors = image_lire_pixel(self);
-	tab->owner = true;
-	return tab;
+  tab->color_num = image_give_largeur(self)*image_give_hauteur(self);
+  tab->colors = malloc(tab->color_num*Dim*sizeof(color));
+ 
+ 
+  int *array = malloc(Dim * sizeof(color));
+  image_debut(self);
+  for (int i = 0; i < tab->color_num; i++) {
+        array = image_lire_pixel(self);
+	image_pixel_suivant(self);
+        for (int k = 0; k < Dim; k++){
+            *(tab->colors+ i*Dim + k) = *(array+k);
+        }
+    } 
+    /*il faudrait free ici */
+    return tab;
 }
+
+
+
 
 boolean destroy_color_table(color_table tab){
 	free(tab->colors);
@@ -31,6 +46,9 @@ boolean destroy_color_table(color_table tab){
 	return(tab->owner);
 }
 
+
+
+
 color_table color_table_duplicate(color_table tab, int offset, int len){
 	color_table dup_tab;
 	assert(offset>-1);
@@ -38,21 +56,24 @@ color_table color_table_duplicate(color_table tab, int offset, int len){
 	dup_tab->owner = false;
   dup_tab->dim = tab->dim;
 	dup_tab->color_num = len;
-	dup_tab->colors = tab->colors + offset; /*l'offset dépendra de la dimension*/
+	dup_tab->colors = tab->colors + dup_tab->dim*offset; /*l'offset dÃ©pendra de la dimension*/
 	return(dup_tab);
 }
 
-void color_table_get_color(color_table tab, int i, color* color_i){ /*on considère que i correspond à la i-ème couleur */
-  int dim = tab->dim;
-  int n = sizeof(tab->colors)/(dim*sizeof(int));
-  assert(i<n);
+
+
+
+
+void color_table_get_color(color_table tab, int i, color* color_i){
+  int Dim = tab->dim;
+  assert(i<tab->color_num);
   
-  
-  color_i = malloc(3*sizeof(int));
-  color_i[0] = tab->colors[dim*i];
-  color_i[1] = tab->colors[dim*i+1];
-  color_i[2] = tab->colors[dim*i+2];
+  for (int k=0; k<3; k++)
+    *(color_i+k) = *(tab->colors +(i*Dim+k));
   }
+  
+  
+  
   
 void swap_tab(color_table tab, int i){
   int temp_tab[tab->dim];
@@ -90,15 +111,10 @@ void color_table_sort(color_table tab, axis x){
     swap = 0;
     for (i=0;i<tab->color_num;i++){
       if (tab->colors[ax+dim*i] > tab->colors[ax+dim*(i+1)]){
-        swap_tab(tab,i);
+        swap_tab(tab,ax+dim*i);
         swap = 1;
         }
       }
     }
   }
   
-  
-  
-  
-    
-
