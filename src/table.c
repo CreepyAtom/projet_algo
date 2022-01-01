@@ -54,7 +54,7 @@ color_table color_table_duplicate(color_table tab, int offset, int len){
 	dup_tab->owner = false;
   dup_tab->dim = tab->dim;
 	dup_tab->color_num = len;
-	dup_tab->colors = tab->colors + dup_tab->dim*offset; /*l'offset dÈpendra de la dimension*/
+	dup_tab->colors = tab->colors + dup_tab->dim*offset; /*l'offset d√©pendra de la dimension*/
 	return(dup_tab);
 }
 
@@ -120,34 +120,62 @@ void color_table_sort(color_table tab, axis x){
   
   
   
-void permute(int* a,int* b){
-  int tmp;
-  tmp = *a;
+// function to swap elements
+void swap(int *a, int *b) {
+  int tmp = *a;
   *a = *b;
   *b = tmp;
 }
 
-void quickSort(int tab[], int first, int last,int ax) {
-    int pivot, i, j;
-    if(first < last) {
-        pivot = first + ax;
-        i = first + ax;
-        j = last + ax;
-        while (i < j) {
-            while(tab[i] <= tab[pivot] && i < last)
-                i++;
-            while(tab[j] > tab[pivot])
-                j--;
-            if(i < j) {
-                permute(&tab[i], &tab[j]);
-            }
-        }
-        permute(&tab[pivot], &tab[j]);
-        quickSort(tab, first, j - 1,ax);
-        quickSort(tab, j + 1, last,ax);
+// function to find the partition position
+int partition(int *tab, int low, int high) {
+
+  // select the rightmost element as pivot
+  int pivot = tab[high];
+
+  // pointer for greater element
+  int i = (low - 3);
+
+  // traverse each element of the array
+  // compare them with the pivot
+  for (int j = low; j < high; j=j+3) {
+    if (tab[j] <= pivot) {
+
+      // if element smaller than pivot is found
+      // swap it with the greater element pointed by i
+      i=i+3;
+
+      // swap element at i with element at j
+      swap(&tab[i], &tab[j]);
     }
+  }
+
+  // swap the pivot element with the greater element at i
+  swap(&tab[i + 3], &tab[high]);
+
+  // return the partition point
+  return (i +3);
 }
- 
+
+void quickSort(int *tab, int low, int high) {
+  if (low < high) {
+
+    // find the pivot element such that
+    // elements smaller than pivot are on left of pivot
+    // elements greater than pivot are on right of pivot
+    int pi = partition(tab, low, high);
+
+    // recursive call on the left of pivot
+    quickSort(tab, low, pi - 3);
+
+    // recursive call on the right of pivot
+    quickSort(tab, pi + 3, high);
+  }
+}
+
+
+
+
 void color_table_sort2(color_table tab, axis x){
   int dim = tab->dim;
   int ax;
@@ -158,7 +186,7 @@ void color_table_sort2(color_table tab, axis x){
     ax = 1;
   if (x == blue)
     ax = 2;
-  quickSort(tab->colors,0,tab->color_num-1,ax);
+  quickSort(tab->colors,ax, tab->color_num - 3 + ax);
 }
   
   
@@ -185,4 +213,4 @@ void print_color_table(color_table tab){
 	}
   return ret;
 }
-/*fonction de calcul de distance inspirÈe du module image, arrangÈe ici*/
+/*fonction de calcul de distance inspir√©e du module image, arrang√©e ici*/
