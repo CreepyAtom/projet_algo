@@ -2,6 +2,13 @@
 #include "table.h"
 #include <assert.h>
 
+
+/*The structure color_table defines a table of colors and for that this structure contains 
+an integer color_num which represents the number of colors , a pointer of integers that 
+represents the successive colors in the table.A boolean owner that indicates whether or not
+the table has allocated a pointer.(Only the table that has allocated a pointer can be freed.
+We added The integer dim that represents the dimension of the image.
+*/
 struct color_table{
   int color_num;
   int *colors;
@@ -10,17 +17,18 @@ struct color_table{
 };
 
 
+/*This function creates a color table (see struct color_table above) from a unidimensional image
+(It creates the color table from an image composed of one line) Owner is set as True.
+*/
 color_table create_color_table(image self){
   color_table tab;
   int Dim = image_give_dim(self);
-  assert(Dim>0 && Dim<=3);
+  assert(Dim>0 && Dim<=3); //We check with the assert that the arguments given are coherent.
   tab = (color_table)malloc(sizeof(struct color_table));
   tab->owner = true;  
   tab->dim = Dim;
   tab->color_num = image_give_largeur(self);
-  tab->colors = malloc(tab->color_num*Dim*sizeof(color));
- 
- 
+  tab->colors = malloc(tab->color_num*Dim*sizeof(color)); 
   int *array;
   image_debut(self);
   for (int i = 0; i < tab->color_num; i++) {
@@ -35,7 +43,9 @@ color_table create_color_table(image self){
 
 
 
-
+/*This function deletes the color table. The pointer will be freed only if owner == True
+The structure however is freed no matter what.
+*/
 boolean destroy_color_table(color_table tab){
 	free(tab->colors);
 	if (tab->owner == true){
@@ -45,26 +55,27 @@ boolean destroy_color_table(color_table tab){
 }
 
 
-
-
+/*This function creates a color table from another table . The first element of the new color_table
+is old_color_table[offset] and the number of elements it contains is len.
+*/
 color_table color_table_duplicate(color_table tab, int offset, int len){
 	color_table dup_tab;
-	assert(offset>-1);
-	assert(len>0);
+	assert(offset>-1); //We check with the assert that the arguments given are coherent.
+	assert(len>0); //We check with the assert that the arguments given are coherent.
 	dup_tab->owner = false;
   dup_tab->dim = tab->dim;
 	dup_tab->color_num = len;
-	dup_tab->colors = tab->colors + dup_tab->dim*offset; /*l'offset dépendra de la dimension*/
+	dup_tab->colors = tab->colors + dup_tab->dim*offset; //The offset depends on the dimension
 	return(dup_tab);
 }
 
 
-
-
-
+/*This function fills the pointer given as 3rd argument color_i with the i_th color in the 
+color table given as first argument 
+*/
 void color_table_get_color(color_table tab, int i, color* color_i){
   int Dim = tab->dim;
-  assert(i<tab->color_num);
+  assert(i<tab->color_num); //We check with the assert that the arguments given are coherent.
   for (int k=0; k<Dim; k++)
     color_i[k] = tab->colors[i*Dim+k];
   }
@@ -73,7 +84,12 @@ void color_table_get_color(color_table tab, int i, color* color_i){
 int color_table_get_color_num(color_table tab){
   return tab->color_num;
 }
-  
+
+
+/*This function sorts the elements of a color table given as first argument depending on 
+the 2nd argument i (0 for the red axis , 1 for the green axis and 2 for the blue axis)
+In this version we use a bubble sort with a complexity of n^2.
+
 void swap_tab(color_table tab, int i){
   int temp_tab[tab->dim];
   if (tab->dim == 1){
@@ -117,9 +133,11 @@ void color_table_sort(color_table tab, axis x){
           break;
       }
     }
-  
-  
-  
+*/  
+
+/*This time we're gonna do a quicksort with a n*log(n) complexity 
+which is way better than the n^2 complexity of the bubble sort
+*/
 // function to swap elements
 void swap(int *a, int *b) {
   int tmp = *a;
@@ -157,12 +175,11 @@ int partition(int *tab, int low, int high) {
   return (i +3);
 }
 
+
 void quickSort(int *tab, int low, int high) {
   if (low < high) {
 
-    // find the pivot element such that
-    // elements smaller than pivot are on left of pivot
-    // elements greater than pivot are on right of pivot
+    // find the pivot element such that elements smaller than the pivot are on the left of the pivot and the elements greater than the pivot are on right of the pivot
     int pi = partition(tab, low, high);
 
     // recursive call on the left of pivot
@@ -172,8 +189,6 @@ void quickSort(int *tab, int low, int high) {
     quickSort(tab, pi + 3, high);
   }
 }
-
-
 
 
 void color_table_sort2(color_table tab, axis x){
@@ -186,7 +201,7 @@ void color_table_sort2(color_table tab, axis x){
     ax = 1;
   if (x == blue)
     ax = 2;
-  quickSort(tab->colors,ax, tab->color_num - 3 + ax);
+  quickSort(tab->colors,ax,dim*(tab->color_num) - 3 + ax);
 }
   
   
@@ -213,4 +228,4 @@ void print_color_table(color_table tab){
 	}
   return ret;
 }
-/*fonction de calcul de distance inspirée du module image, arrangée ici*/
+//function to calculate the distance inspired from the module image, arranged here
